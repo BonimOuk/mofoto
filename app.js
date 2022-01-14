@@ -22,13 +22,9 @@ app.get('/', (req, res) => {
   res.render('home');
 });
 
-app.get('/makemofoto', async (req, res) => {
-  const mof = new Mofoto({
-    title: 'My Backyard',
-    description: 'Cheap camping!',
-  });
-  await mof.save();
-  res.send(mof);
+app.get('/mofotos', async (req, res) => {
+  const mofotos = await Mofoto.find({});
+  res.render('mofotos/index', { mofotos });
 });
 
 app.listen(3000, () => {
