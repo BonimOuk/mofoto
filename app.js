@@ -27,6 +27,11 @@ app.get('/mofotos', async (req, res) => {
   res.render('mofotos/index', { mofotos });
 });
 
+app.get('/mofotos/:id', async (req, res) => {
+  const mofoto = await Mofoto.findById(req.params.id);
+  res.render('mofotos/show', { mofoto });
+});
+
 app.listen(3000, () => {
   console.log('Serving on port 3000');
 });
