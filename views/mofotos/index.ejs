@@ -8,6 +8,9 @@
   </head>
   <body>
     <h1>All Mofotos</h1>
+    <div>
+      <a href="/mofotos/new">Add Mofoto</a>
+    </div>
     <ul>
       <% for(let mofoto of mofotos ) { %>
       <li><a href="/mofotos/<%= mofoto._id %>"><%= mofoto.title %></a></li>

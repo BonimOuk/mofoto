@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const Mofoto = require('./models/mofoto');
+const { urlencoded } = require('express');
 
 mongoose.connect('mongodb://localhost:27017/mofoto', {
   useNewUrlParser: true,
@@ -18,6 +19,8 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+app.use(express.urlencoded({ extended: true }));
+
 app.get('/', (req, res) => {
   res.render('home');
 });
@@ -27,9 +30,19 @@ app.get('/mofotos', async (req, res) => {
   res.render('mofotos/index', { mofotos });
 });
 
+app.get('/mofotos/new', (req, res) => {
+  res.render('mofotos/new');
+});
+
 app.get('/mofotos/:id', async (req, res) => {
   const mofoto = await Mofoto.findById(req.params.id);
   res.render('mofotos/show', { mofoto });
+});
+
+app.post('/mofotos', async (req, res) => {
+  const mofoto = new Mofoto(req.body.mofoto);
+  await mofoto.save();
+  res.redirect(`/mofotos/${mofoto._id}`);
 });
 
 app.listen(3000, () => {
