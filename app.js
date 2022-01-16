@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
+const methodOverride = require('method-override');
 const Mofoto = require('./models/mofoto');
 const { urlencoded } = require('express');
 
@@ -20,6 +21,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
 
 app.get('/', (req, res) => {
   res.render('home');
@@ -34,14 +36,25 @@ app.get('/mofotos/new', (req, res) => {
   res.render('mofotos/new');
 });
 
+app.post('/mofotos', async (req, res) => {
+  const mofoto = new Mofoto(req.body.mofoto);
+  await mofoto.save();
+  res.redirect(`/mofotos/${mofoto._id}`);
+});
+
 app.get('/mofotos/:id', async (req, res) => {
   const mofoto = await Mofoto.findById(req.params.id);
   res.render('mofotos/show', { mofoto });
 });
 
-app.post('/mofotos', async (req, res) => {
-  const mofoto = new Mofoto(req.body.mofoto);
-  await mofoto.save();
+app.get('/mofotos/:id/edit', async (req, res) => {
+  const mofoto = await Mofoto.findById(req.params.id);
+  res.render('mofotos/edit', { mofoto });
+});
+
+app.put('/mofotos/:id', async (req, res) => {
+  const { id } = req.params;
+  const mofoto = await Mofoto.findByIdAndUpdate(id, { ...req.body.mofoto });
   res.redirect(`/mofotos/${mofoto._id}`);
 });
 
