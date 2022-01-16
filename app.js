@@ -58,6 +58,12 @@ app.put('/mofotos/:id', async (req, res) => {
   res.redirect(`/mofotos/${mofoto._id}`);
 });
 
+app.delete('/mofotos/:id', async (req, res) => {
+  const { id } = req.params;
+  await Mofoto.findByIdAndDelete(id);
+  res.redirect('/mofotos');
+});
+
 app.listen(3000, () => {
   console.log('Serving on port 3000');
 });

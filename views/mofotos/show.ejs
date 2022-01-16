@@ -10,6 +10,9 @@
     <h1><%= mofoto.title %></h1>
     <h1><%= mofoto.location %></h1>
     <a href="/mofotos/<%= mofoto._id %>/edit">Edit</a>
+    <p>
+      <form action="/mofotos/<%= mofoto._id%>?_method=DELETE" method="POST"><button>Delete</button></form>
+    </p>
     <footer>
       <a href="/mofotos">All Mofotos</a>
     </footer>
