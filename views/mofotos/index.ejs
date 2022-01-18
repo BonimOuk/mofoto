@@ -1,20 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mofotos</title>
-  </head>
-  <body>
-    <h1>All Mofotos</h1>
-    <div>
-      <a href="/mofotos/new">Add Mofoto</a>
-    </div>
-    <ul>
-      <% for(let mofoto of mofotos ) { %>
-      <li><a href="/mofotos/<%= mofoto._id %>"><%= mofoto.title %></a></li>
-      <% } %>
-    </ul>
-  </body>
-</html>
+<%- layout('layouts/boilerplate') %>
+<h1>All Mofotos</h1>
+<div>
+  <a href="/mofotos/new">Add Mofoto</a>
+</div>
+<ul>
+  <% for(let mofoto of mofotos ) { %>
+  <li><a href="/mofotos/<%= mofoto._id %>"><%= mofoto.title %></a></li>
+  <% } %>
+</ul>
