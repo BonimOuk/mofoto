@@ -19,9 +19,14 @@ const seedDB = async () => {
   await Mofoto.deleteMany({});
   for (let i = 0; i < 50; i++) {
     const random1000 = Math.floor(Math.random() * 1000);
+    const price = Math.floor(Math.random() * 20) + 10;
     const mof = new Mofoto({
-      location: `${cities[random1000].city}, ${cities[random1000].state} `,
       title: `${sample(descriptors)} ${sample(places)}`,
+      location: `${cities[random1000].city}, ${cities[random1000].state}`,
+      image: 'https://source.unsplash.com/collection/483251',
+      description:
+        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam, aperiam quibusdam! Velit voluptatem voluptatum doloribus illum quia possimus, earum dolores cupiditate ratione vitae tenetur molestiae, facere, fugiat iusto qui tempore!',
+      price,
     });
     await mof.save();
   }
