@@ -1,13 +1,63 @@
 <%- layout('layouts/boilerplate') %>
-<form action="/mofotos" method="POST">
-  <div>
-    <label for="title">Title</label>
-    <input type="text" id="title" name="mofoto[title]" />
+<div class="row">
+  <h1 class="text-center">New Mofoto</h1>
+  <div class="col-6 offset-3">
+    <form action="/mofotos" method="POST">
+      <div class="mb-3">
+        <label class="form-label" for="title">Title</label>
+        <input
+          class="form-control"
+          type="text"
+          id="title"
+          name="mofoto[title]"
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="location">Location</label>
+        <input
+          class="form-control"
+          type="text"
+          id="location"
+          name="mofoto[location]"
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="image">Image</label>
+        <input
+          class="form-control"
+          type="text"
+          id="image"
+          name="mofoto[image]"
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="price">Price</label>
+        <div class="input-group">
+          <span class="input-group-text" id="price-label">$</span>
+          <input
+            type="text"
+            class="form-control"
+            id="price"
+            name="mofoto[price]"
+            placeholder="0.00"
+            aria-label="price"
+            aria-describedby="price-label"
+          />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="description">Description</label>
+        <textarea
+          class="form-control"
+          name="mofoto[description]"
+          id="description"
+        ></textarea>
+      </div>
+      <div class="mb-3">
+        <button class="btn btn-success">Add Mofoto</button>
+      </div>
+    </form>
+    <a href="/mofotos">All Mofotos</a>
   </div>
-  <div>
-    <label for="location">Location</label>
-    <input type="text" id="location" name="mofoto[location]" />
-  </div>
-  <button>Add Mofoto</button>
-</form>
-<a href="/mofotos">All Mofotos</a>
+</div>
