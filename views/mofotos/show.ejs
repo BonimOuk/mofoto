@@ -1,13 +1,29 @@
 <%- layout('layouts/boilerplate') %>
-    <h1><%= mofoto.title %></h1>
-    <h2><%= mofoto.location %></h2>
-    <img src="<%= mofoto.image %>" alt="">
-    <p><%= mofoto.description %></p>
-    <a href="/mofotos/<%= mofoto._id %>/edit">Edit</a>
-    <p>
-      <form action="/mofotos/<%= mofoto._id%>?_method=DELETE" method="POST"><button>Delete</button></form>
-    </p>
-    <footer>
-      <a href="/mofotos">All Mofotos</a>
-    </footer>
-
+<div class="row">
+  <div class="col-6 offset-3">
+    <div class="card mb-3">
+      <img src="<%= mofoto.image %>" class="card-img-top" alt="..." />
+      <div class="card-body">
+        <h5 class="card-title"><%= mofoto.title %></h5>
+        <p class="card-text"><%= mofoto.description %></p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item text-muted"><%= mofoto.location %></li>
+        <li class="list-group-item">$<%= mofoto.price %></li>
+      </ul>
+      <div class="card-body">
+        <a class="card-link btn btn-info" href="/mofotos/<%= mofoto._id %>/edit"
+          >Edit</a
+        >
+        <form
+          class="d-inline"
+          action="/mofotos/<%= mofoto._id%>?_method=DELETE"
+          method="POST"
+        >
+          <button class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+      <div class="card-footer text-muted">2 days ago</div>
+    </div>
+  </div>
+</div>
