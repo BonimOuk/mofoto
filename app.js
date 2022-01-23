@@ -38,10 +38,14 @@ app.get('/mofotos/new', (req, res) => {
   res.render('mofotos/new');
 });
 
-app.post('/mofotos', async (req, res) => {
-  const mofoto = new Mofoto(req.body.mofoto);
-  await mofoto.save();
-  res.redirect(`/mofotos/${mofoto._id}`);
+app.post('/mofotos', async (req, res, next) => {
+  try {
+    const mofoto = new Mofoto(req.body.mofoto);
+    await mofoto.save();
+    res.redirect(`/mofotos/${mofoto._id}`);
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.get('/mofotos/:id', async (req, res) => {
@@ -64,6 +68,10 @@ app.delete('/mofotos/:id', async (req, res) => {
   const { id } = req.params;
   await Mofoto.findByIdAndDelete(id);
   res.redirect('/mofotos');
+});
+
+app.use((err, req, res, next) => {
+  res.send('Oh boy, something went wrong!!!');
 });
 
 app.listen(3000, () => {
