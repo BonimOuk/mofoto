@@ -2,7 +2,12 @@
 <div class="row">
   <h1 class="text-center">Edit <%= mofoto.title %></h1>
   <div class="col-6 offset-3">
-    <form action="/mofotos/<%= mofoto._id %>?_method=PUT" method="POST">
+    <form
+      action="/mofotos/<%= mofoto._id %>?_method=PUT"
+      method="POST"
+      novalidate
+      class="validated-form"
+    >
       <div class="mb-3">
         <label class="form-label" for="title">Title</label>
         <input
@@ -11,7 +16,9 @@
           id="title"
           name="mofoto[title]"
           value="<%= mofoto.title %>"
+          required
         />
+        <div class="valid-feedback">Looks good!</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="location">Location</label>
@@ -21,7 +28,9 @@
           id="location"
           name="mofoto[location]"
           value="<%= mofoto.location %>"
+          required
         />
+        <div class="valid-feedback">Looks good!</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="image">Image</label>
@@ -31,7 +40,9 @@
           id="image"
           name="mofoto[image]"
           value="<%= mofoto.image %>"
+          required
         />
+        <div class="valid-feedback">Looks good!</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="price">Price</label>
@@ -45,7 +56,9 @@
             aria-label="price"
             aria-describedby="price-label"
             value="<%= mofoto.price %>"
+            required
           />
+          <div class="valid-feedback">Looks good!</div>
         </div>
       </div>
 
@@ -55,9 +68,11 @@
           class="form-control"
           name="mofoto[description]"
           id="description"
+          required
         >
 <%= mofoto.description %></textarea
         >
+        <div class="valid-feedback">Looks good!</div>
       </div>
       <div class="mb-3">
         <button class="btn btn-info">Update Mofoto</button>
