@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
+const Joi = require('joi');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
@@ -46,7 +47,22 @@ app.get('/mofotos/new', (req, res) => {
 app.post(
   '/mofotos',
   catchAsync(async (req, res, next) => {
-    if (!req.body.mofoto) throw new ExpressError('Invalid Mofoto Data', 400);
+    // if (!req.body.mofoto) throw new ExpressError('Invalid Mofoto Data', 400);
+    const mofotoSchema = Joi.object({
+      mofoto: Joi.object({
+        title: Joi.string().required(),
+        price: Joi.number().required().min(0),
+        image: Joi.string().required(),
+        location: Joi.string().required(),
+        description: Joi.string().required(),
+      }).required(),
+    });
+    const { error } = mofotoSchema.validate(req.body);
+    // console.log(result);
+    if (error) {
+      const msg = error.details.map((el) => el.message).join(',');
+      throw new ExpressError(msg, 400);
+    }
     const mofoto = new Mofoto(req.body.mofoto);
     await mofoto.save();
     res.redirect(`/mofotos/${mofoto._id}`);
