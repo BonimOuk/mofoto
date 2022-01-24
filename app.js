@@ -3,6 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync');
+const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const Mofoto = require('./models/mofoto');
 const { urlencoded } = require('express');
@@ -45,6 +46,7 @@ app.get('/mofotos/new', (req, res) => {
 app.post(
   '/mofotos',
   catchAsync(async (req, res, next) => {
+    if (!req.body.mofoto) throw new ExpressError('Invalid Mofoto Data', 400);
     const mofoto = new Mofoto(req.body.mofoto);
     await mofoto.save();
     res.redirect(`/mofotos/${mofoto._id}`);
@@ -85,8 +87,13 @@ app.delete(
   })
 );
 
+app.all('*', (req, res, next) => {
+  next(new ExpressError('Page Not Found', 404));
+});
+
 app.use((err, req, res, next) => {
-  res.send('Oh boy, something went wrong!!!');
+  const { statusCode = 500, message = 'Something went wrong!' } = err;
+  res.status(statusCode).send(message);
 });
 
 app.listen(3000, () => {
