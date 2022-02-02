@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
-const { mofotoSchema } = require('./schemas');
+const { mofotoSchema, reviewSchema } = require('./schemas');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
@@ -30,6 +30,17 @@ app.use(methodOverride('_method'));
 
 const validateMofoto = (req, res, next) => {
   const { error } = mofotoSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(',');
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
+};
+
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
+  console.log(error);
   if (error) {
     const msg = error.details.map((el) => el.message).join(',');
     throw new ExpressError(msg, 400);
@@ -103,6 +114,7 @@ app.delete(
 
 app.post(
   '/mofotos/:id/reviews',
+  validateReview,
   catchAsync(async (req, res) => {
     const mofoto = await Mofoto.findById(req.params.id);
     const review = new Review(req.body.review);
