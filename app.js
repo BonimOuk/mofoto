@@ -80,7 +80,7 @@ app.post(
 app.get(
   '/mofotos/:id',
   catchAsync(async (req, res) => {
-    const mofoto = await Mofoto.findById(req.params.id);
+    const mofoto = await Mofoto.findById(req.params.id).populate('reviews');
     res.render('mofotos/show', { mofoto });
   })
 );
