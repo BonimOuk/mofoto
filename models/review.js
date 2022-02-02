@@ -6,4 +6,4 @@ const reviewSchema = new Schema({
   rating: Number,
 });
 
-module.exports = mongoose.reviewSchema('Review', reviewSchema);
+module.exports = mongoose.model('Review', reviewSchema);

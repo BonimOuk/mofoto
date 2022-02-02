@@ -7,7 +7,7 @@ const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const Mofoto = require('./models/mofoto');
-const { urlencoded } = require('express');
+const Review = require('./models/review');
 
 mongoose.connect('mongodb://localhost:27017/mofoto', {
   useNewUrlParser: true,
@@ -98,6 +98,18 @@ app.delete(
     const { id } = req.params;
     await Mofoto.findByIdAndDelete(id);
     res.redirect('/mofotos');
+  })
+);
+
+app.post(
+  '/mofotos/:id/reviews',
+  catchAsync(async (req, res) => {
+    const mofoto = await Mofoto.findById(req.params.id);
+    const review = new Review(req.body.review);
+    mofoto.reviews.push(review);
+    await review.save();
+    await mofoto.save();
+    res.redirect(`/mofotos/${mofoto._id}`);
   })
 );
 
