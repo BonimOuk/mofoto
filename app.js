@@ -125,6 +125,19 @@ app.post(
   })
 );
 
+app.delete(
+  '/mofotos/:id/reviews/:reviewId',
+  catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    const mofoto = await Mofoto.findByIdAndUpdate(id, {
+      $pull: { reviews: reviewId },
+    });
+    await Review.findByIdAndDelete(reviewId);
+
+    res.redirect(`/mofotos/${id}`);
+  })
+);
+
 app.all('*', (req, res, next) => {
   next(new ExpressError('Page Not Found', 404));
 });
