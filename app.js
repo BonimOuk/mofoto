@@ -134,7 +134,7 @@ app.delete(
     });
     await Review.findByIdAndDelete(reviewId);
 
-    res.redirect(`/mofotos/${id}`);
+    res.redirect(`/mofotos/${id}`, { mofoto });
   })
 );
 
