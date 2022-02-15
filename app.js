@@ -8,6 +8,7 @@ const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const Mofoto = require('./models/mofoto');
 const Review = require('./models/review');
+const mofotos = require('./routes/mofotos');
 
 mongoose.connect('mongodb://localhost:27017/mofoto', {
   useNewUrlParser: true,
@@ -28,16 +29,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
-const validateMofoto = (req, res, next) => {
-  const { error } = mofotoSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(',');
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
-
 const validateReview = (req, res, next) => {
   const { error } = reviewSchema.validate(req.body);
   console.log(error);
@@ -49,68 +40,11 @@ const validateReview = (req, res, next) => {
   }
 };
 
+app.use('/mofotos', mofotos);
+
 app.get('/', (req, res) => {
   res.render('home');
 });
-
-app.get(
-  '/mofotos',
-  catchAsync(async (req, res) => {
-    const mofotos = await Mofoto.find({});
-    res.render('mofotos/index', { mofotos });
-  })
-);
-
-app.get('/mofotos/new', (req, res) => {
-  res.render('mofotos/new');
-});
-
-app.post(
-  '/mofotos',
-  validateMofoto,
-  catchAsync(async (req, res, next) => {
-    // if (!req.body.mofoto) throw new ExpressError('Invalid Mofoto Data', 400);
-
-    const mofoto = new Mofoto(req.body.mofoto);
-    await mofoto.save();
-    res.redirect(`/mofotos/${mofoto._id}`);
-  })
-);
-
-app.get(
-  '/mofotos/:id',
-  catchAsync(async (req, res) => {
-    const mofoto = await Mofoto.findById(req.params.id).populate('reviews');
-    res.render('mofotos/show', { mofoto });
-  })
-);
-
-app.get(
-  '/mofotos/:id/edit',
-  catchAsync(async (req, res) => {
-    const mofoto = await Mofoto.findById(req.params.id);
-    res.render('mofotos/edit', { mofoto });
-  })
-);
-
-app.put(
-  '/mofotos/:id',
-  validateMofoto,
-  catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const mofoto = await Mofoto.findByIdAndUpdate(id, { ...req.body.mofoto });
-    res.redirect(`/mofotos/${mofoto._id}`);
-  })
-);
-
-app.delete(
-  '/mofotos/:id',
-  catchAsync(async (req, res) => {
-    const { id } = req.params;
-    await Mofoto.findByIdAndDelete(id);
-    res.redirect('/mofotos');
-  })
-);
 
 app.post(
   '/mofotos/:id/reviews',
