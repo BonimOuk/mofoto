@@ -62,6 +62,7 @@ router.put(
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const mofoto = await Mofoto.findByIdAndUpdate(id, { ...req.body.mofoto });
+    req.flash('success', 'Successfully updated mofoto!');
     res.redirect(`/mofotos/${mofoto._id}`);
   })
 );
@@ -71,6 +72,7 @@ router.delete(
   catchAsync(async (req, res) => {
     const { id } = req.params;
     await Mofoto.findByIdAndDelete(id);
+    req.flash('success', 'Successfully deleted mofoto!');
     res.redirect('/mofotos');
   })
 );
