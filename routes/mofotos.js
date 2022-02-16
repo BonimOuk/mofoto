@@ -44,6 +44,10 @@ router.get(
   '/:id',
   catchAsync(async (req, res) => {
     const mofoto = await Mofoto.findById(req.params.id).populate('reviews');
+    if (!mofoto) {
+      req.flash('error', 'Cannot find that mofoto!');
+      return res.redirect('/mofotos');
+    }
     res.render('mofotos/show', { mofoto });
   })
 );
