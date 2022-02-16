@@ -35,6 +35,7 @@ router.post(
 
     const mofoto = new Mofoto(req.body.mofoto);
     await mofoto.save();
+    req.flash('success', 'Successfully made a new mofoto!');
     res.redirect(`/mofotos/${mofoto._id}`);
   })
 );
