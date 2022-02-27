@@ -15,8 +15,11 @@ router.post(
       const { email, username, password } = req.body;
       const user = await new User({ email, username });
       const registeredUser = await User.register(user, password);
-      req.flash('success', 'Welcome to Mofoto!');
-      res.redirect('/mofotos');
+      req.login(registeredUser, (err) => {
+        if (err) return next(err);
+        req.flash('success', 'Welcome to Mofoto!');
+        res.redirect('/mofotos');
+      });
     } catch (err) {
       req.flash('error', err.message);
       res.redirect('register');
