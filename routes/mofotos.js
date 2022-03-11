@@ -36,6 +36,7 @@ router.post(
     // if (!req.body.mofoto) throw new ExpressError('Invalid Mofoto Data', 400);
 
     const mofoto = new Mofoto(req.body.mofoto);
+    mofoto.author = req.user._id;
     await mofoto.save();
     req.flash('success', 'Successfully made a new mofoto!');
     res.redirect(`/mofotos/${mofoto._id}`);
@@ -45,7 +46,15 @@ router.post(
 router.get(
   '/:id',
   catchAsync(async (req, res) => {
-    const mofoto = await Mofoto.findById(req.params.id).populate('reviews');
+    const mofoto = await Mofoto.findById(req.params.id)
+      .populate({
+        path: 'reviews',
+        populate: {
+          path: 'author',
+        },
+      })
+      .populate('author');
+    console.log(mofoto);
     if (!mofoto) {
       req.flash('error', 'Cannot find that mofoto!');
       return res.redirect('/mofotos');
