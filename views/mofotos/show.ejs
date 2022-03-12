@@ -14,6 +14,7 @@
         </li>
         <li class="list-group-item">$<%= mofoto.price %></li>
       </ul>
+      <%if (currentUser && mofoto.author.equals(currentUser._id)) {%>
       <div class="card-body">
         <a class="card-link btn btn-info" href="/mofotos/<%= mofoto._id %>/edit"
           >Edit</a
@@ -26,6 +27,7 @@
           <button class="btn btn-danger">Delete</button>
         </form>
       </div>
+      <% } %>
       <div class="card-footer text-muted">2 days ago</div>
     </div>
   </div>
