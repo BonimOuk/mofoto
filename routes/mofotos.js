@@ -67,7 +67,17 @@ router.get(
   '/:id/edit',
   isLoggedIn,
   catchAsync(async (req, res) => {
-    const mofoto = await Mofoto.findById(req.params.id);
+    const { id } = req.params;
+    const mofoto = await Mofoto.findById(id);
+    if (!mofoto) {
+      req.flash('error', 'Cannot find that mofoto!');
+      return res.redirect('/mofotos');
+    }
+    if (!mofoto.author.equals(req.user._id)) {
+      req.flash('error', 'You do not have permission to do that!');
+      return res.redirect(`/mofotos/${id}`);
+    }
+
     res.render('mofotos/edit', { mofoto });
   })
 );
@@ -78,9 +88,14 @@ router.put(
   validateMofoto,
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const mofoto = await Mofoto.findByIdAndUpdate(id, { ...req.body.mofoto });
+    const mofoto = await Mofoto.findById(id);
+    if (!mofoto.author.equals(req.user._id)) {
+      req.flash('error', 'You do not have permission to do that!');
+      return res.redirect(`/mofotos/${id}`);
+    }
+    const mof = await Mofoto.findByIdAndUpdate(id, { ...req.body.mofoto });
     req.flash('success', 'Successfully updated mofoto!');
-    res.redirect(`/mofotos/${mofoto._id}`);
+    res.redirect(`/mofotos/${mof._id}`);
   })
 );
 
