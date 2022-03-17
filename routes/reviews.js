@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
-const { validateReview } = require('../middleware');
+const { validateReview, isLoggedIn } = require('../middleware');
 const Mofoto = require('../models/mofoto');
 const Review = require('../models/review');
 const catchAsync = require('../utils/catchAsync');
@@ -8,10 +8,11 @@ const catchAsync = require('../utils/catchAsync');
 router.post(
   '/',
   validateReview,
+  isLoggedIn,
   catchAsync(async (req, res) => {
     const mofoto = await Mofoto.findById(req.params.id);
     const review = new Review(req.body.review);
-
+    review.author = req.user._id;
     mofoto.reviews.push(review);
     await review.save();
     await mofoto.save();
@@ -22,6 +23,7 @@ router.post(
 
 router.delete(
   '/:reviewId',
+  isLoggedIn,
   catchAsync(async (req, res) => {
     const { id, reviewId } = req.params;
     await Mofoto.findByIdAndUpdate(id, {
