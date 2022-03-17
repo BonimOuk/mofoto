@@ -1,21 +1,9 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
+const { validateReview } = require('../middleware');
 const Mofoto = require('../models/mofoto');
 const Review = require('../models/review');
-const { reviewSchema } = require('../schemas');
 const catchAsync = require('../utils/catchAsync');
-const ExpressError = require('../utils/ExpressError');
-
-const validateReview = (req, res, next) => {
-  const { error } = reviewSchema.validate(req.body);
-  console.log(error);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(',');
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
 
 router.post(
   '/',
@@ -23,6 +11,7 @@ router.post(
   catchAsync(async (req, res) => {
     const mofoto = await Mofoto.findById(req.params.id);
     const review = new Review(req.body.review);
+
     mofoto.reviews.push(review);
     await review.save();
     await mofoto.save();

@@ -1,20 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { mofotoSchema } = require('../schemas');
 const catchAsync = require('../utils/catchAsync');
-const { isLoggedIn } = require('../middleware');
-const ExpressError = require('../utils/ExpressError');
+const { isLoggedIn, validateMofoto, isAuthor } = require('../middleware');
 const Mofoto = require('../models/mofoto');
-
-const validateMofoto = (req, res, next) => {
-  const { error } = mofotoSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(',');
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
 
 router.get(
   '/',
@@ -33,8 +21,6 @@ router.post(
   isLoggedIn,
   validateMofoto,
   catchAsync(async (req, res, next) => {
-    // if (!req.body.mofoto) throw new ExpressError('Invalid Mofoto Data', 400);
-
     const mofoto = new Mofoto(req.body.mofoto);
     mofoto.author = req.user._id;
     await mofoto.save();
@@ -66,6 +52,7 @@ router.get(
 router.get(
   '/:id/edit',
   isLoggedIn,
+  isAuthor,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const mofoto = await Mofoto.findById(id);
@@ -73,11 +60,6 @@ router.get(
       req.flash('error', 'Cannot find that mofoto!');
       return res.redirect('/mofotos');
     }
-    if (!mofoto.author.equals(req.user._id)) {
-      req.flash('error', 'You do not have permission to do that!');
-      return res.redirect(`/mofotos/${id}`);
-    }
-
     res.render('mofotos/edit', { mofoto });
   })
 );
@@ -85,23 +67,21 @@ router.get(
 router.put(
   '/:id',
   isLoggedIn,
+  isAuthor,
   validateMofoto,
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const mofoto = await Mofoto.findById(id);
-    if (!mofoto.author.equals(req.user._id)) {
-      req.flash('error', 'You do not have permission to do that!');
-      return res.redirect(`/mofotos/${id}`);
-    }
-    const mof = await Mofoto.findByIdAndUpdate(id, { ...req.body.mofoto });
+
+    const mofoto = await Mofoto.findByIdAndUpdate(id, { ...req.body.mofoto });
     req.flash('success', 'Successfully updated mofoto!');
-    res.redirect(`/mofotos/${mof._id}`);
+    res.redirect(`/mofotos/${mofoto._id}`);
   })
 );
 
 router.delete(
   '/:id',
   isLoggedIn,
+  isAuthor,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     await Mofoto.findByIdAndDelete(id);
