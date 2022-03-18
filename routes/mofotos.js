@@ -3,7 +3,6 @@ const router = express.Router();
 const mofotos = require('../controllers/mofotos');
 const catchAsync = require('../utils/catchAsync');
 const { isLoggedIn, validateMofoto, isAuthor } = require('../middleware');
-const Mofoto = require('../models/mofoto');
 
 router.get('/', catchAsync(mofotos.index));
 
