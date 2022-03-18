@@ -1,6 +1,7 @@
 const { mofotoSchema, reviewSchema } = require('./schemas');
 const ExpressError = require('./utils/ExpressError');
 const Mofoto = require('./models/mofoto');
+const Review = require('./models/review');
 
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
@@ -25,6 +26,16 @@ module.exports.isAuthor = async (req, res, next) => {
   const { id } = req.params;
   const mofoto = await Mofoto.findById(id);
   if (!mofoto.author.equals(req.user._id)) {
+    req.flash('error', 'You do not have permission to do that!');
+    return res.redirect(`/mofotos/${id}`);
+  }
+  next();
+};
+
+module.exports.isReviewAuthor = async (req, res, next) => {
+  const { id, reviewId } = req.params;
+  const review = await Review.findById(reviewId);
+  if (!review.author.equals(req.user._id)) {
     req.flash('error', 'You do not have permission to do that!');
     return res.redirect(`/mofotos/${id}`);
   }
