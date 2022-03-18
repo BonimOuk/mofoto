@@ -4,13 +4,18 @@ const mofotos = require('../controllers/mofotos');
 const catchAsync = require('../utils/catchAsync');
 const { isLoggedIn, validateMofoto, isAuthor } = require('../middleware');
 
-router.get('/', catchAsync(mofotos.index));
+router
+  .route('/')
+  .get(catchAsync(mofotos.index))
+  .post(isLoggedIn, validateMofoto, catchAsync(mofotos.createMofoto));
 
 router.get('/new', isLoggedIn, mofotos.renderNewForm);
 
-router.post('/', isLoggedIn, validateMofoto, catchAsync(mofotos.createMofoto));
-
-router.get('/:id', catchAsync(mofotos.showMofoto));
+router
+  .route('/:id')
+  .get(catchAsync(mofotos.showMofoto))
+  .put(isLoggedIn, isAuthor, validateMofoto, catchAsync(mofotos.updateMofoto))
+  .delete(isLoggedIn, isAuthor, catchAsync(mofotos.deleteMofoto));
 
 router.get(
   '/:id/edit',
@@ -18,15 +23,5 @@ router.get(
   isAuthor,
   catchAsync(mofotos.renderEditForm)
 );
-
-router.put(
-  '/:id',
-  isLoggedIn,
-  isAuthor,
-  validateMofoto,
-  catchAsync(mofotos.updateMofoto)
-);
-
-router.delete('/:id', isLoggedIn, isAuthor, catchAsync(mofotos.deleteMofoto));
 
 module.exports = router;
