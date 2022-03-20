@@ -9,8 +9,10 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary,
-  folder: 'Mofoto',
-  allowedFormats: ['jpeg', 'jpg', 'png'],
+  params: {
+    folder: 'Mofoto',
+    allowedFormats: ['jpeg', 'jpg', 'png'],
+  },
 });
 
 module.exports = {

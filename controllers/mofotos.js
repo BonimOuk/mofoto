@@ -11,8 +11,10 @@ module.exports.renderNewForm = (req, res) => {
 
 module.exports.createMofoto = async (req, res, next) => {
   const mofoto = new Mofoto(req.body.mofoto);
+  mofoto.images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
   mofoto.author = req.user._id;
   await mofoto.save();
+  console.log(mofoto);
   req.flash('success', 'Successfully made a new mofoto!');
   res.redirect(`/mofotos/${mofoto._id}`);
 };

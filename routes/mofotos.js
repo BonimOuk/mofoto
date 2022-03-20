@@ -10,11 +10,12 @@ const upload = multer({ storage });
 router
   .route('/')
   .get(catchAsync(mofotos.index))
-  // .post(isLoggedIn, validateMofoto, catchAsync(mofotos.createMofoto));
-  .post(upload.array('image'), (req, res) => {
-    console.log(req.body, req.files);
-    res.send('IT WORKED!');
-  });
+  .post(
+    isLoggedIn,
+    upload.array('image'),
+    validateMofoto,
+    catchAsync(mofotos.createMofoto)
+  );
 
 router.get('/new', isLoggedIn, mofotos.renderNewForm);
 
