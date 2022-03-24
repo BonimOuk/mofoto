@@ -48,8 +48,10 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateMofoto = async (req, res) => {
   const { id } = req.params;
-
   const mofoto = await Mofoto.findByIdAndUpdate(id, { ...req.body.mofoto });
+  const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }));
+  mofoto.images.push(...imgs);
+  await mofoto.save();
   req.flash('success', 'Successfully updated mofoto!');
   res.redirect(`/mofotos/${mofoto._id}`);
 };

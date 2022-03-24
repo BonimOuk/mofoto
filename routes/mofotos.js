@@ -22,7 +22,13 @@ router.get('/new', isLoggedIn, mofotos.renderNewForm);
 router
   .route('/:id')
   .get(catchAsync(mofotos.showMofoto))
-  .put(isLoggedIn, isAuthor, validateMofoto, catchAsync(mofotos.updateMofoto))
+  .put(
+    isLoggedIn,
+    isAuthor,
+    upload.array('image'),
+    validateMofoto,
+    catchAsync(mofotos.updateMofoto)
+  )
   .delete(isLoggedIn, isAuthor, catchAsync(mofotos.deleteMofoto));
 
 router.get(
