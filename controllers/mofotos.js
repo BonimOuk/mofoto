@@ -1,4 +1,5 @@
 const Mofoto = require('../models/mofoto');
+const { cloudinary } = require('../cloudinary');
 
 module.exports.index = async (req, res) => {
   const mofotos = await Mofoto.find({});
@@ -53,6 +54,16 @@ module.exports.updateMofoto = async (req, res) => {
   const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }));
   mofoto.images.push(...imgs);
   await mofoto.save();
+  if (req.body.deleteImages) {
+    for (let filename of req.body.deleteImages) {
+      await cloudinary.uploader.destroy(filename);
+    }
+    await mofoto.updateOne({
+      $pull: { images: { filename: { $in: req.body.deleteImages } } },
+    });
+    console.log(mofoto);
+  }
+
   req.flash('success', 'Successfully updated mofoto!');
   res.redirect(`/mofotos/${mofoto._id}`);
 };
