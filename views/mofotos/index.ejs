@@ -8,7 +8,15 @@
 <div class="card" mb-3>
   <div class="row">
     <div class="col-md-4">
+      <% if(mofoto.images.length){ %>
       <img class="img-fluid" src="<%= mofoto.images[0].url %>" alt="" />
+      <% }else {%>
+      <img
+        class="img-fluid"
+        alt=""
+        src="https://res.cloudinary.com/bonim/image/upload/v1648181550/Mofoto/k77ol7ehhm1dga98mnei.jpg"
+      />
+      <% } %>
     </div>
     <div class="col-md-8">
       <div class="card-body">
