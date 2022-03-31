@@ -20,15 +20,15 @@ module.exports.createMofoto = async (req, res, next) => {
       limit: 1,
     })
     .send();
-  res.send(geoData.body.features[0].geometry.coordinates);
-  res.send('OK!!!');
-  // const mofoto = new Mofoto(req.body.mofoto);
-  // mofoto.images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
-  // mofoto.author = req.user._id;
-  // await mofoto.save();
-  // console.log(mofoto);
-  // req.flash('success', 'Successfully made a new mofoto!');
-  // res.redirect(`/mofotos/${mofoto._id}`);
+
+  const mofoto = new Mofoto(req.body.mofoto);
+  mofoto.geometry = geoData.body.features[0].geometry;
+  mofoto.images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
+  mofoto.author = req.user._id;
+  await mofoto.save();
+  console.log(mofoto);
+  req.flash('success', 'Successfully made a new mofoto!');
+  res.redirect(`/mofotos/${mofoto._id}`);
 };
 
 module.exports.showMofoto = async (req, res) => {
