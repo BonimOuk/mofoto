@@ -1,4 +1,7 @@
 const Mofoto = require('../models/mofoto');
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services//geocoding');
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 const { cloudinary } = require('../cloudinary');
 
 module.exports.index = async (req, res) => {
@@ -11,13 +14,21 @@ module.exports.renderNewForm = (req, res) => {
 };
 
 module.exports.createMofoto = async (req, res, next) => {
-  const mofoto = new Mofoto(req.body.mofoto);
-  mofoto.images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
-  mofoto.author = req.user._id;
-  await mofoto.save();
-  console.log(mofoto);
-  req.flash('success', 'Successfully made a new mofoto!');
-  res.redirect(`/mofotos/${mofoto._id}`);
+  const geoData = await geocoder
+    .forwardGeocode({
+      query: req.body.mofoto.location,
+      limit: 1,
+    })
+    .send();
+  res.send(geoData.body.features[0].geometry.coordinates);
+  res.send('OK!!!');
+  // const mofoto = new Mofoto(req.body.mofoto);
+  // mofoto.images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
+  // mofoto.author = req.user._id;
+  // await mofoto.save();
+  // console.log(mofoto);
+  // req.flash('success', 'Successfully made a new mofoto!');
+  // res.redirect(`/mofotos/${mofoto._id}`);
 };
 
 module.exports.showMofoto = async (req, res) => {
