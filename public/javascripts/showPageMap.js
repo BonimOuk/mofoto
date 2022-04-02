@@ -6,4 +6,11 @@ const map = new mapboxgl.Map({
   zoom: 8,
 });
 
-new mapboxgl.Marker().setLngLat(mofoto.geometry.coordinates).addTo(map);
+new mapboxgl.Marker()
+  .setLngLat(mofoto.geometry.coordinates)
+  .setPopup(
+    new mapboxgl.Popup({ offset: 25 }).setHTML(
+      `<h3>${mofoto.title}</h3><p>${mofoto.location}</p>`
+    )
+  )
+  .addTo(map);
