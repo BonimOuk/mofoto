@@ -5,6 +5,8 @@ const map = new mapboxgl.Map({
   center: mofoto.geometry.coordinates,
   zoom: 8,
 });
+// Add zoom and rotation controls to the map.
+map.addControl(new mapboxgl.NavigationControl());
 
 new mapboxgl.Marker()
   .setLngLat(mofoto.geometry.coordinates)
