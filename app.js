@@ -13,14 +13,13 @@ const methodOverride = require('method-override');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
-
 const mongoSanitize = require('express-mongo-sanitize');
 
 const userRoutes = require('./routes/users');
 const mofotoRoutes = require('./routes/mofotos');
 const reviewRoutes = require('./routes/reviews');
 
-mongoose.connect('mongodb://localhost:27017/mofoto', {
+mongoose.connect('mongodb://127.0.0.1:27017/mofoto', {
   useNewUrlParser: true,
 });
 
@@ -62,7 +61,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-  console.log(req.session);
+  console.log(req.query);
   res.locals.currentUser = req.user;
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
