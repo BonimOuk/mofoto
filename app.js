@@ -21,7 +21,7 @@ const reviewRoutes = require("./routes/reviews");
 
 const MongoStore = require("connect-mongo");
 
-const dbUrl = "mongodb://127.0.0.1:27017/mofoto";
+const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017/mofoto";
 
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
@@ -44,9 +44,11 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(mongoSanitize());
 
+const secret = process.env.SECRET || "thisismysecret";
+
 const store = MongoStore.create({
   mongoUrl: dbUrl,
-  secret: "thisismysecret",
+  secret,
   touchAfter: 24 * 60 * 60,
 });
 
@@ -57,7 +59,7 @@ store.on("error", function (e) {
 const sessionConfig = {
   store,
   name: "session",
-  secret: "thisismysecret",
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
