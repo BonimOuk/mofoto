@@ -14,14 +14,15 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user");
 const helmet = require("helmet");
+
 const mongoSanitize = require("express-mongo-sanitize");
+
 const userRoutes = require("./routes/users");
 const mofotoRoutes = require("./routes/mofotos");
 const reviewRoutes = require("./routes/reviews");
-
 const MongoStore = require("connect-mongo");
 
-const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017/mofoto";
+const dbUrl = "mongodb://127.0.0.1:27017/mofoto";
 
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
@@ -44,11 +45,9 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(mongoSanitize());
 
-const secret = process.env.SECRET || "thisismysecret";
-
 const store = MongoStore.create({
   mongoUrl: dbUrl,
-  secret,
+  secret: process.env.SECRET,
   touchAfter: 24 * 60 * 60,
 });
 
@@ -59,7 +58,7 @@ store.on("error", function (e) {
 const sessionConfig = {
   store,
   name: "session",
-  secret,
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -165,8 +164,6 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error", { err });
 });
 
-const port = process.env.PORT || 3000;
-
-app.listen(port, () => {
-  console.log(`Serving on port ${port}`);
+app.listen(3000, () => {
+  console.log("Serving on port 3000");
 });
